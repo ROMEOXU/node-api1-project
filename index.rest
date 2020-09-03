@@ -1,0 +1,23 @@
+GET http://localhost:8000/
+
+###
+
+POST http://localhost:8000/api/users
+Content-Type: application/json
+
+{
+        "id": "11",
+        "name": "romeo three",
+        "bio": "juliet's boyfriend, another romeo three"
+}
+
+###
+
+POST http://localhost:8000/api/users
+Content-Type: application/json
+
+{
+        "id": "12",
+        "name": "romeo four",
+        "bio": "juliet's boyfriend, another romeo four"
+}

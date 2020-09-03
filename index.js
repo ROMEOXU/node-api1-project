@@ -16,10 +16,14 @@ const users = [{
     bio: "Not Tarzan's Wife, another Jane",  // String, required
   }]
 server.get("/",(req,res)=>{
-res.send('<h1>hello express</h1>')
+res.send('<h1>hello express from Romeo</h1>')
 });
 server.get("/api/users",(req,res)=>{
- res.json(users)
+ 
+ if(!req.body){
+     res.status(500).json({error:'The users information could not be retrieved'})
+ }
+ res.json(users);
 });
 server.post("/api/users",(req,res)=>{
     // const schema = {
@@ -36,17 +40,31 @@ server.post("/api/users",(req,res)=>{
         name:req.body.name,
         bio:req.body.bio
     };
-    users.push(newuser);
-    res.json(newuser);
+    if (!newuser.name || !newuser.bio){
+        res.status(400).json({error:'need name and bio info'})
+    }
+    if (newuser){
+        users.push(newuser);
+        res.status(201).json(newuser);
+    }else{
+        res.status(500).json({error:"There was an error to the database"})
+    }
+    
 })
 
 server.get("/api/users/:id",(req,res)=>{
-    const eachuser = users.find(c=>c.id===(req.params.id));
+    const eachuser = users.find(e=>e.id===(req.params.id));
+    if(!eachuser){
+        res.status(404).json({message:"The user with the specified ID does not exist."})
+    }
+    if(!req.body){
+        res.status(500).json({error:"The user information could not be retrieved."})
+    }
     res.send(eachuser)
 })
 
 server.delete("/api/users/:id",(req,res)=>{
-    let eachuser = users.find(c=>c.id===(req.params.id));
+    let eachuser = users.find(e=>e.id===(req.params.id));
     // if (!each) return res.status(404).send('the ID not Found');
     const index = users.indexOf(eachuser);
     users.splice(index,1);
@@ -63,6 +81,11 @@ server.put("/api/users/:id",(req,res)=>{
     users[index]=req.body;
     res.json(users[index])
 })
+//not working ?
+// server.use(function(req,res,next){
+//     console.log('middleware is building now');
+//     next();
+// })
 
 const PORT = 8000;
 server.listen(PORT,()=>{console.log(`i am now listening on ${PORT} `)})
